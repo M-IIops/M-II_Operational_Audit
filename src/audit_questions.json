@@ -1,0 +1,702 @@
+[
+  {
+    "n": 1,
+    "q": "Core SOPs exist for revenue-producing work.",
+    "impact": "Productivity",
+    "severity": "High",
+    "tier": "Foundations"
+  },
+  {
+    "n": 2,
+    "q": "Core SOPs exist for customer onboarding.",
+    "impact": "Productivity",
+    "severity": "High",
+    "tier": "Foundations"
+  },
+  {
+    "n": 3,
+    "q": "Core SOPs exist for customer delivery.",
+    "impact": "Productivity",
+    "severity": "High",
+    "tier": "Foundations"
+  },
+  {
+    "n": 4,
+    "q": "Core SOPs exist for billing and collections.",
+    "impact": "Margin",
+    "severity": "High",
+    "tier": "Foundations"
+  },
+  {
+    "n": 5,
+    "q": "Core SOPs exist for purchasing and approvals.",
+    "impact": "Margin",
+    "severity": "Medium",
+    "tier": "Foundations"
+  },
+  {
+    "n": 6,
+    "q": "Core SOPs are actually followed by the team.",
+    "impact": "Productivity",
+    "severity": "High",
+    "tier": "Foundations"
+  },
+  {
+    "n": 7,
+    "q": "Job descriptions exist for every active role.",
+    "impact": "Productivity",
+    "severity": "Low",
+    "tier": "Foundations"
+  },
+  {
+    "n": 8,
+    "q": "Job descriptions define outcomes, not just tasks.",
+    "impact": "Productivity",
+    "severity": "Low",
+    "tier": "Foundations"
+  },
+  {
+    "n": 9,
+    "q": "Job descriptions define reporting relationships.",
+    "impact": "Founder Freedom",
+    "severity": "Low",
+    "tier": "Foundations"
+  },
+  {
+    "n": 10,
+    "q": "Job descriptions define decision boundaries.",
+    "impact": "Founder Freedom",
+    "severity": "Medium",
+    "tier": "Foundations"
+  },
+  {
+    "n": 11,
+    "q": "An org chart exists and matches reality.",
+    "impact": "Founder Freedom",
+    "severity": "Medium",
+    "tier": "Foundations"
+  },
+  {
+    "n": 12,
+    "q": "Critical duties are not only held in the founder\u2019s head.",
+    "impact": "Founder Freedom",
+    "severity": "High",
+    "tier": "Foundations"
+  },
+  {
+    "n": 13,
+    "q": "A central document repository exists.",
+    "impact": "Productivity",
+    "severity": "Low",
+    "tier": "Foundations"
+  },
+  {
+    "n": 14,
+    "q": "The business has written policies for recurring issues.",
+    "impact": "Productivity",
+    "severity": "Low",
+    "tier": "Foundations"
+  },
+  {
+    "n": 15,
+    "q": "A new-hire onboarding process is documented.",
+    "impact": "Productivity",
+    "severity": "Medium",
+    "tier": "Foundations"
+  },
+  {
+    "n": 16,
+    "q": "Offboarding and access removal are documented.",
+    "impact": "Compliance",
+    "severity": "Medium",
+    "tier": "Foundations"
+  },
+  {
+    "n": 17,
+    "q": "Standard templates exist for recurring workflows.",
+    "impact": "Productivity",
+    "severity": "Low",
+    "tier": "Foundations"
+  },
+  {
+    "n": 18,
+    "q": "Key systems are listed and assigned to owners.",
+    "impact": "Founder Freedom",
+    "severity": "Medium",
+    "tier": "Foundations"
+  },
+  {
+    "n": 19,
+    "q": "Core vendor contacts are documented.",
+    "impact": "Productivity",
+    "severity": "Low",
+    "tier": "Foundations"
+  },
+  {
+    "n": 20,
+    "q": "Core customer segments are documented.",
+    "impact": "Growth",
+    "severity": "Low",
+    "tier": "Foundations"
+  },
+  {
+    "n": 21,
+    "q": "The company has a defined value proposition.",
+    "impact": "Growth",
+    "severity": "Medium",
+    "tier": "Foundations"
+  },
+  {
+    "n": 22,
+    "q": "Leadership meeting cadence is established.",
+    "impact": "Founder Freedom",
+    "severity": "Medium",
+    "tier": "Foundations"
+  },
+  {
+    "n": 23,
+    "q": "The owner is not the only approver for everything.",
+    "impact": "Founder Freedom",
+    "severity": "High",
+    "tier": "Foundations"
+  },
+  {
+    "n": 24,
+    "q": "Financial reports are produced regularly.",
+    "impact": "Margin",
+    "severity": "High",
+    "tier": "Foundations"
+  },
+  {
+    "n": 25,
+    "q": "The team knows where to find answers without asking the owner.",
+    "impact": "Founder Freedom",
+    "severity": "High",
+    "tier": "Foundations"
+  },
+  {
+    "n": 26,
+    "q": "Work can continue for several days without founder input.",
+    "impact": "Founder Freedom",
+    "severity": "High",
+    "tier": "Foundations"
+  },
+  {
+    "n": 27,
+    "q": "Critical passwords and logins are controlled.",
+    "impact": "Compliance",
+    "severity": "High",
+    "tier": "Foundations"
+  },
+  {
+    "n": 28,
+    "q": "The business has a basic dashboard of key numbers.",
+    "impact": "Margin",
+    "severity": "High",
+    "tier": "Foundations"
+  },
+  {
+    "n": 29,
+    "q": "Team members understand what \u201cdone\u201d looks like.",
+    "impact": "Productivity",
+    "severity": "Medium",
+    "tier": "Foundations"
+  },
+  {
+    "n": 30,
+    "q": "The business has enough structure to reduce daily chaos.",
+    "impact": "Founder Freedom",
+    "severity": "Medium",
+    "tier": "Foundations"
+  },
+  {
+    "n": 31,
+    "q": "The top bottlenecks are identified.",
+    "impact": "Productivity",
+    "severity": "High",
+    "tier": "Implementation"
+  },
+  {
+    "n": 32,
+    "q": "Bottlenecks are ranked by financial impact.",
+    "impact": "Margin",
+    "severity": "High",
+    "tier": "Implementation"
+  },
+  {
+    "n": 33,
+    "q": "Each bottleneck has a named owner.",
+    "impact": "Founder Freedom",
+    "severity": "High",
+    "tier": "Implementation"
+  },
+  {
+    "n": 34,
+    "q": "Cycle time is tracked for key workflows.",
+    "impact": "Productivity",
+    "severity": "High",
+    "tier": "Implementation"
+  },
+  {
+    "n": 35,
+    "q": "Rework and error rates are tracked.",
+    "impact": "Margin",
+    "severity": "High",
+    "tier": "Implementation"
+  },
+  {
+    "n": 36,
+    "q": "Client response time is tracked.",
+    "impact": "Growth",
+    "severity": "Medium",
+    "tier": "Implementation"
+  },
+  {
+    "n": 37,
+    "q": "Onboarding time is tracked.",
+    "impact": "Productivity",
+    "severity": "Medium",
+    "tier": "Implementation"
+  },
+  {
+    "n": 38,
+    "q": "Service delivery time is tracked against estimates.",
+    "impact": "Margin",
+    "severity": "High",
+    "tier": "Implementation"
+  },
+  {
+    "n": 39,
+    "q": "Job completion time is tracked against estimates.",
+    "impact": "Margin",
+    "severity": "High",
+    "tier": "Implementation"
+  },
+  {
+    "n": 40,
+    "q": "Time-on-task is measured against labor cost.",
+    "impact": "Margin",
+    "severity": "High",
+    "tier": "Implementation"
+  },
+  {
+    "n": 41,
+    "q": "Training plans exist for key roles.",
+    "impact": "Productivity",
+    "severity": "Medium",
+    "tier": "Implementation"
+  },
+  {
+    "n": 42,
+    "q": "Training is role-specific.",
+    "impact": "Productivity",
+    "severity": "Medium",
+    "tier": "Implementation"
+  },
+  {
+    "n": 43,
+    "q": "Managers know how to train consistently.",
+    "impact": "Founder Freedom",
+    "severity": "Medium",
+    "tier": "Implementation"
+  },
+  {
+    "n": 44,
+    "q": "New process changes include training materials.",
+    "impact": "Productivity",
+    "severity": "Medium",
+    "tier": "Implementation"
+  },
+  {
+    "n": 45,
+    "q": "Team members are verified for competency.",
+    "impact": "Productivity",
+    "severity": "High",
+    "tier": "Implementation"
+  },
+  {
+    "n": 46,
+    "q": "Cross-training exists for critical functions.",
+    "impact": "Founder Freedom",
+    "severity": "High",
+    "tier": "Implementation"
+  },
+  {
+    "n": 47,
+    "q": "Meetings have a standard agenda and purpose.",
+    "impact": "Productivity",
+    "severity": "Low",
+    "tier": "Implementation"
+  },
+  {
+    "n": 48,
+    "q": "Action items are tracked after meetings.",
+    "impact": "Productivity",
+    "severity": "Medium",
+    "tier": "Implementation"
+  },
+  {
+    "n": 49,
+    "q": "Follow-up ownership is assigned every time.",
+    "impact": "Founder Freedom",
+    "severity": "Medium",
+    "tier": "Implementation"
+  },
+  {
+    "n": 50,
+    "q": "Escalation paths are known and used.",
+    "impact": "Founder Freedom",
+    "severity": "High",
+    "tier": "Implementation"
+  },
+  {
+    "n": 51,
+    "q": "KPIs are reviewed on a regular cadence.",
+    "impact": "Margin",
+    "severity": "High",
+    "tier": "Implementation"
+  },
+  {
+    "n": 52,
+    "q": "Leading indicators are tracked, not only lagging results.",
+    "impact": "Growth",
+    "severity": "Medium",
+    "tier": "Implementation"
+  },
+  {
+    "n": 53,
+    "q": "Workload spikes are visible before they create breakdowns.",
+    "impact": "Productivity",
+    "severity": "High",
+    "tier": "Implementation"
+  },
+  {
+    "n": 54,
+    "q": "Customer complaints are logged and reviewed.",
+    "impact": "Growth",
+    "severity": "Medium",
+    "tier": "Implementation"
+  },
+  {
+    "n": 55,
+    "q": "Corrective actions are assigned and verified.",
+    "impact": "Productivity",
+    "severity": "Medium",
+    "tier": "Implementation"
+  },
+  {
+    "n": 56,
+    "q": "Process changes are tested before full rollout.",
+    "impact": "Productivity",
+    "severity": "Medium",
+    "tier": "Implementation"
+  },
+  {
+    "n": 57,
+    "q": "The business has a continuous improvement method.",
+    "impact": "Growth",
+    "severity": "Medium",
+    "tier": "Implementation"
+  },
+  {
+    "n": 58,
+    "q": "Productivity problems are addressed quickly.",
+    "impact": "Productivity",
+    "severity": "High",
+    "tier": "Implementation"
+  },
+  {
+    "n": 59,
+    "q": "The owner is not the default backup for every problem.",
+    "impact": "Founder Freedom",
+    "severity": "High",
+    "tier": "Implementation"
+  },
+  {
+    "n": 60,
+    "q": "Admin work is not consuming high-value labor hours.",
+    "impact": "Margin",
+    "severity": "High",
+    "tier": "Implementation"
+  },
+  {
+    "n": 61,
+    "q": "Scheduling is centralized and visible.",
+    "impact": "Productivity",
+    "severity": "High",
+    "tier": "Implementation"
+  },
+  {
+    "n": 62,
+    "q": "Work is assigned with deadlines and accountability.",
+    "impact": "Founder Freedom",
+    "severity": "High",
+    "tier": "Implementation"
+  },
+  {
+    "n": 63,
+    "q": "Delay points are documented when jobs slip.",
+    "impact": "Margin",
+    "severity": "Medium",
+    "tier": "Implementation"
+  },
+  {
+    "n": 64,
+    "q": "Pricing reflects setup, travel, and admin time.",
+    "impact": "Margin",
+    "severity": "High",
+    "tier": "Implementation"
+  },
+  {
+    "n": 65,
+    "q": "Execution is repeatable without heroic effort.",
+    "impact": "Founder Freedom",
+    "severity": "High",
+    "tier": "Implementation"
+  },
+  {
+    "n": 66,
+    "q": "The organizational structure supports current volume.",
+    "impact": "Founder Freedom",
+    "severity": "High",
+    "tier": "Transformation"
+  },
+  {
+    "n": 67,
+    "q": "The organizational structure supports planned growth.",
+    "impact": "Growth",
+    "severity": "High",
+    "tier": "Transformation"
+  },
+  {
+    "n": 68,
+    "q": "Span of control is appropriate for each manager.",
+    "impact": "Founder Freedom",
+    "severity": "Medium",
+    "tier": "Transformation"
+  },
+  {
+    "n": 69,
+    "q": "Management layers are intentional.",
+    "impact": "Founder Freedom",
+    "severity": "Medium",
+    "tier": "Transformation"
+  },
+  {
+    "n": 70,
+    "q": "Every critical function has a named owner.",
+    "impact": "Founder Freedom",
+    "severity": "High",
+    "tier": "Transformation"
+  },
+  {
+    "n": 71,
+    "q": "Backup ownership exists for key functions.",
+    "impact": "Founder Freedom",
+    "severity": "High",
+    "tier": "Transformation"
+  },
+  {
+    "n": 72,
+    "q": "Hiring is tied to workload and capacity.",
+    "impact": "Margin",
+    "severity": "High",
+    "tier": "Transformation"
+  },
+  {
+    "n": 73,
+    "q": "Staffing levels are based on actual demand.",
+    "impact": "Margin",
+    "severity": "High",
+    "tier": "Transformation"
+  },
+  {
+    "n": 74,
+    "q": "Roles are aligned to business priorities.",
+    "impact": "Growth",
+    "severity": "Medium",
+    "tier": "Transformation"
+  },
+  {
+    "n": 75,
+    "q": "The hiring process is documented.",
+    "impact": "Productivity",
+    "severity": "Medium",
+    "tier": "Transformation"
+  },
+  {
+    "n": 76,
+    "q": "Recruiting channels are tracked by effectiveness.",
+    "impact": "Growth",
+    "severity": "Medium",
+    "tier": "Transformation"
+  },
+  {
+    "n": 77,
+    "q": "Turnover is measured and analyzed.",
+    "impact": "Margin",
+    "severity": "High",
+    "tier": "Transformation"
+  },
+  {
+    "n": 78,
+    "q": "Retention risks are identified early.",
+    "impact": "Founder Freedom",
+    "severity": "Medium",
+    "tier": "Transformation"
+  },
+  {
+    "n": 79,
+    "q": "Performance reviews happen on schedule.",
+    "impact": "Productivity",
+    "severity": "Medium",
+    "tier": "Transformation"
+  },
+  {
+    "n": 80,
+    "q": "Underperformance is handled with a defined process.",
+    "impact": "Founder Freedom",
+    "severity": "High",
+    "tier": "Transformation"
+  },
+  {
+    "n": 81,
+    "q": "Compensation is aligned to role scope and market reality.",
+    "impact": "Margin",
+    "severity": "High",
+    "tier": "Transformation"
+  },
+  {
+    "n": 82,
+    "q": "Compliance obligations are identified by function.",
+    "impact": "Compliance",
+    "severity": "High",
+    "tier": "Transformation"
+  },
+  {
+    "n": 83,
+    "q": "Regulatory responsibilities have owners.",
+    "impact": "Compliance",
+    "severity": "High",
+    "tier": "Transformation"
+  },
+  {
+    "n": 84,
+    "q": "Licenses, permits, and filings are current.",
+    "impact": "Compliance",
+    "severity": "High",
+    "tier": "Transformation"
+  },
+  {
+    "n": 85,
+    "q": "HR compliance requirements are documented.",
+    "impact": "Compliance",
+    "severity": "High",
+    "tier": "Transformation"
+  },
+  {
+    "n": 86,
+    "q": "Payroll practices are compliant and reviewed.",
+    "impact": "Compliance",
+    "severity": "High",
+    "tier": "Transformation"
+  },
+  {
+    "n": 87,
+    "q": "Internal controls exist for sensitive workflows.",
+    "impact": "Compliance",
+    "severity": "High",
+    "tier": "Transformation"
+  },
+  {
+    "n": 88,
+    "q": "Segregation of duties is built into financial processes.",
+    "impact": "Compliance",
+    "severity": "High",
+    "tier": "Transformation"
+  },
+  {
+    "n": 89,
+    "q": "Access controls are reviewed regularly.",
+    "impact": "Compliance",
+    "severity": "High",
+    "tier": "Transformation"
+  },
+  {
+    "n": 90,
+    "q": "Vendor agreements are written and enforceable.",
+    "impact": "Margin",
+    "severity": "Medium",
+    "tier": "Transformation"
+  },
+  {
+    "n": 91,
+    "q": "Insurance coverage matches operational risk.",
+    "impact": "Compliance",
+    "severity": "High",
+    "tier": "Transformation"
+  },
+  {
+    "n": 92,
+    "q": "Business continuity or disaster recovery plans exist.",
+    "impact": "Founder Freedom",
+    "severity": "High",
+    "tier": "Transformation"
+  },
+  {
+    "n": 93,
+    "q": "Single points of failure are identified and reduced.",
+    "impact": "Founder Freedom",
+    "severity": "High",
+    "tier": "Transformation"
+  },
+  {
+    "n": 94,
+    "q": "Strategic planning is tied to capacity.",
+    "impact": "Growth",
+    "severity": "Medium",
+    "tier": "Transformation"
+  },
+  {
+    "n": 95,
+    "q": "Reporting structure is scalable beyond the founder.",
+    "impact": "Founder Freedom",
+    "severity": "High",
+    "tier": "Transformation"
+  },
+  {
+    "n": 96,
+    "q": "The founder can take time off without operations collapsing.",
+    "impact": "Founder Freedom",
+    "severity": "High",
+    "tier": "Transformation"
+  },
+  {
+    "n": 97,
+    "q": "Delegated authority is real, not symbolic.",
+    "impact": "Founder Freedom",
+    "severity": "High",
+    "tier": "Transformation"
+  },
+  {
+    "n": 98,
+    "q": "The business can grow without proportional chaos.",
+    "impact": "Growth",
+    "severity": "High",
+    "tier": "Transformation"
+  },
+  {
+    "n": 99,
+    "q": "The business can meet compliance demands without last-minute panic.",
+    "impact": "Compliance",
+    "severity": "High",
+    "tier": "Transformation"
+  },
+  {
+    "n": 100,
+    "q": "The company is built as an asset, not a dependency on the owner.",
+    "impact": "Founder Freedom",
+    "severity": "High",
+    "tier": "Transformation"
+  }
+]
