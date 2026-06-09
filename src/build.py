@@ -6,7 +6,7 @@ Reads:
     ./audit_questions.json
 
 Writes:
-    ../index.html  (the wizard — served at the site root)
+    ../public/index.html  (the wizard — served at the site root by Express)
 
 Usage (from anywhere):
     python3 src/build.py
@@ -18,7 +18,7 @@ import os
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 LOGO_PATH = os.path.join(ROOT, 'assets', 'M-II-Operations-Logo-no-background.jpg')
 QUESTIONS_PATH = os.path.join(ROOT, 'src', 'audit_questions.json')
-OUTPUT_PATH = os.path.join(ROOT, 'index.html')
+OUTPUT_PATH = os.path.join(ROOT, 'public', 'index.html')
 
 with open(LOGO_PATH, 'rb') as f:
     logo_b64 = base64.b64encode(f.read()).decode('ascii')
@@ -457,7 +457,7 @@ const STORAGE_KEY = 'mii_audit_v1';
 //   3. Paste the Payment Link URL between the quotes below (replace the placeholder).
 // While the value below starts with "REPLACE_", the Pay button runs a test simulation
 // so you can preview the rest of the flow end-to-end.
-const STRIPE_PAYMENT_LINK = "REPLACE_WITH_STRIPE_PAYMENT_LINK";
+const STRIPE_PAYMENT_LINK = "https://buy.stripe.com/28E6oGeKv0327E66aoeME02";
 const AUDIT_PRICE_LABEL = "$998";
 
 // ============= STATE =============
@@ -1354,6 +1354,47 @@ async function submitAudit(){
   else highGaps.forEach(q=>{ summary += `#${q.n} [${q.impact}] ${q.q}\n`; });
   summary += `\n--- FULL RESPONSES ---\n`;
   QUESTIONS.forEach(q=>{ const a = state.answers[q.n]; summary += `#${q.n} [${a===undefined?'-':a}] ${q.q}\n`; });
+
+  // ----- Anonymous storage to Postgres (best-effort, never blocks email) -----
+  // We send the anonymized score breakdown + a separate contact block so the
+  // backend can split them into two tables (audit_responses + audit_contacts).
+  try {
+    const tier_pcts = {};
+    TIERS.forEach(t=>{ const d=s.byTier[t.name]||{score:0,max:0}; tier_pcts[t.name] = d.max ? +(d.score/d.max*100).toFixed(2) : 0; });
+    const category_pcts = {};
+    Object.keys(s.byCategory).forEach(c=>{ const d=s.byCategory[c]; category_pcts[c] = d.max ? +(d.score/d.max*100).toFixed(2) : 0; });
+    const severity_pcts = {};
+    Object.keys(s.bySeverity||{}).forEach(sv=>{ const d=s.bySeverity[sv]; severity_pcts[sv] = d.max ? +(d.score/d.max*100).toFixed(2) : 0; });
+    const answersOut = {};
+    Object.keys(state.answers||{}).forEach(k=>{ const v=state.answers[k]; if(v===0||v===1||v===2) answersOut[k]=v; });
+    const payload = {
+      anon: {
+        industry: state.contact.industry || null,
+        revenue_range: state.contact.revenue || null,
+        headcount: state.contact.headcount || null,
+        overall_pct: +(overallPct*100).toFixed(2),
+        tier_pcts, category_pcts, severity_pcts,
+        answers: answersOut,
+        total_answered: s.totalAnswered || 0,
+        user_agent: navigator.userAgent || ''
+      },
+      contact: {
+        company: state.contact.company || null,
+        contact_name: state.contact.name || null,
+        email: state.contact.email || null,
+        phone: state.contact.phone || null,
+        role: state.contact.role || null,
+        location: state.contact.location || null
+      }
+    };
+    fetch('/api/submit', {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify(payload),
+      keepalive: true
+    }).then(r=>r.ok?null:console.warn('[audit] storage non-2xx', r.status))
+      .catch(err=>console.warn('[audit] storage failed', err && err.message));
+  } catch(err){ console.warn('[audit] storage payload error', err && err.message); }
 
   // Submit to Web3Forms
   status.innerHTML = '<div class="alert alert-info"><div>Sending results to Randy…</div></div>';

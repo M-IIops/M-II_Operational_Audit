@@ -4,8 +4,10 @@ Self-contained HTML wizard that guides a small or mid-size business owner throug
 100-touchpoint operational audit, then generates a branded PDF report and forwards results to
 [Randy.Derrick@miiops.com](mailto:Randy.Derrick@miiops.com) for a 30-minute review call.
 
-**Live entry point:** open `index.html` in any modern browser, or deploy to Railway
-(recommended — see [Deploy to Railway](#deploy-to-railway) below).
+Every submission is also stored anonymously in a Postgres database so M-II can run aggregate
+reports on the most commonly neglected areas (policies, authority matrix, onboarding, etc.).
+Contact information is stored in a separate table linked only by a random UUID — the response
+data and the contact data are never joined in any of the admin dashboard reports.
 
 ---
 
@@ -20,39 +22,56 @@ Self-contained HTML wizard that guides a small or mid-size business owner throug
    impact area (Productivity, Margin, Founder Freedom, Compliance, Growth) and a risk severity (High,
    Medium, Low). Answers are saved to `localStorage` so save-and-resume just works.
 5. **Review page** — color-coded score grid, overall maturity %, per-tier interpretation.
-6. **Submit** — generates a branded PDF (cover · executive summary · impact areas · prioritized action
-   plan · full response log · next-steps page), downloads it to the customer's device, and emails the
-   results + PDF attachment to Randy with the subject **"Operational Audit — [Company Name]"**.
+6. **Submit** —
+   - Generates a branded PDF (cover · executive summary · impact areas · prioritized action plan ·
+     full response log · next-steps page) and downloads it to the customer's device.
+   - Emails the results + PDF attachment to Randy with the subject **"Operational Audit — [Company Name]"**.
+   - Stores the anonymized score breakdown in Postgres (`audit_responses`) and the contact info in
+     a separate table (`audit_contacts`) linked only by a random `anon_id` UUID.
+7. **Admin dashboard at `/admin`** — Basic-Auth-protected page showing total submissions, average
+   maturity, weakest tier and impact area, most-neglected questions, distribution by industry /
+   revenue / headcount / state, and the most recent 25 contacts.
 
 ---
 
 ## Deploy to Railway
 
-This repo is configured to deploy as a static site on Railway with zero extra setup.
+This repo deploys as an Express app on Railway with a Postgres add-on.
 
 1. In Railway, click **+ New → Deploy from GitHub repo → `M-IIops/M-II_Operational_Audit`**.
    *(If the repo doesn't appear, go to <https://github.com/settings/installations>, find Railway,
    click Configure on the **M-IIops** org installation, and grant access to this repo.)*
 2. Railway detects `package.json` and `railway.json` and builds automatically (Nixpacks → Node).
-3. Once deployed, click **Settings → Networking → Generate Domain** to get a public URL like
+3. **Add a Postgres service:** in the same Railway project, click **+ New → Database → Add PostgreSQL**.
+   Railway will inject `DATABASE_URL` into the Express service automatically. On the next deploy
+   the migration script creates the `audit_responses` and `audit_contacts` tables.
+4. **Set environment variables** on the Express service (Service → Variables):
+   - `ADMIN_USER` — username for `/admin` (default: `admin`)
+   - `ADMIN_PASS` — **required** to enable the admin dashboard. If unset, `/admin` returns 503.
+   - `WEB3FORMS_KEY` is currently configured inside `public/index.html` (see below); it does **not**
+     need to be set as an env var.
+5. Once deployed, click **Settings → Networking → Generate Domain** to get a public URL like
    `mii-operational-audit-production.up.railway.app`. Add a custom domain (e.g.
    `audit.miiops.com`) if you'd like a branded URL.
-4. The root of the domain (`/`) serves the wizard (`index.html`) directly.
-5. Set your Stripe Payment Link's **success URL** to:
+6. Set your Stripe Payment Link's **success URL** to:
    `https://YOUR-RAILWAY-DOMAIN/?paid=1`
 
 Files that make this work:
-- `package.json` — declares `serve` as the runtime and exposes `npm start` on `$PORT`.
-- `railway.json` — tells Railway the start command and restart policy.
-- `serve.json` — cache headers and static-site behavior.
+- `package.json` — declares `express` and `pg` and exposes `npm start` on `$PORT`.
+- `railway.json` — start command runs the migration then boots the server:
+  `node scripts/migrate.js && node server.js`.
+- `scripts/migrate.js` — idempotent Postgres schema setup. Safe to run on every deploy.
+- `server.js` — Express app: serves `public/`, exposes `POST /api/submit`, `/admin`, and
+  `/admin/api/stats`.
 
-No Dockerfile required. No environment variables required. Re-deploys on every push to `main`.
+The migration script exits cleanly (status 0) if `DATABASE_URL` is not set, so the static wizard
+still serves even before you attach Postgres.
 
 ---
 
 ## Configure before going live
 
-Open `operational-audit-wizard.html` in a text editor and find the **CONFIG** section near the top of the
+Open `public/index.html` in a text editor and find the **CONFIG** section near the top of the
 `<script>` block.
 
 ### 1. Web3Forms (email delivery)
@@ -65,7 +84,7 @@ Go to <https://web3forms.com>, enter `Randy.Derrick@miiops.com`, and Web3Forms w
 access key (no signup, no backend). Paste it between the quotes.
 
 Until this is configured, submission falls back to a pre-filled `mailto:` link so the customer can send
-the results manually.
+the results manually. The anonymized record is still saved to Postgres regardless of email status.
 
 ### 2. Stripe Payment Link
 
@@ -75,11 +94,37 @@ const STRIPE_PAYMENT_LINK = "REPLACE_WITH_STRIPE_PAYMENT_LINK";
 
 1. In Stripe Dashboard → Products → **Payment Links** → create a $998 one-time payment link.
 2. Set its **success URL** to the public URL of this page with `?paid=1` appended, e.g.
-   `https://miiops.com/operational-audit.html?paid=1`.
+   `https://audit.miiops.com/?paid=1`.
 3. Paste the Payment Link URL between the quotes.
 
 While the value still starts with `REPLACE_`, the Pay button runs a clearly labeled test simulation so the
 rest of the flow can be previewed end-to-end.
+
+### 3. Admin dashboard credentials (env vars)
+
+Set in Railway → Service → Variables:
+
+```
+ADMIN_USER = admin
+ADMIN_PASS = <pick a strong password>
+```
+
+Visit `https://YOUR-RAILWAY-DOMAIN/admin` and the browser will prompt for these credentials
+(HTTP Basic Auth).
+
+---
+
+## Privacy model
+
+The audit's storage is intentionally split into two tables:
+
+| Table | Contains | Used in admin dashboard? |
+| --- | --- | --- |
+| `audit_responses` | Anonymized score breakdown (industry, revenue range, headcount, state, per-tier %, per-impact-area %, per-severity %, individual question scores 0/1/2, total answered, user-agent). Keyed by a random UUID `anon_id`. | **Yes — this powers all aggregate reports.** |
+| `audit_contacts` | Company name, contact name, email, phone, role, full location. Keyed by the same `anon_id` as a foreign key. | Only the "recent contacts" table shows raw entries; aggregate charts never join contacts in. |
+
+If you ever need to forget a customer, deleting their row in `audit_responses` cascades and removes
+their `audit_contacts` row too.
 
 ---
 
@@ -87,11 +132,13 @@ rest of the flow can be previewed end-to-end.
 
 | File | What it is |
 | --- | --- |
-| `index.html` | The standalone wizard. **This is what gets served at `/`.** |
-| `sample_audit_report.pdf` | Example PDF output so you can see what clients receive. |
-| `package.json` | Node config so Railway can serve the static file. |
-| `railway.json` | Railway build/start configuration. |
-| `serve.json` | Cache headers + static-site behavior for the deployed Railway service. |
+| `public/index.html` | The standalone wizard. Served at `/`. |
+| `public/admin.html` | The admin dashboard (charts + tables). Served at `/admin` behind Basic Auth. |
+| `public/sample_audit_report.pdf` | Example PDF output so you can see what clients receive. |
+| `server.js` | Express app: static `/public`, `POST /api/submit`, `/admin`, `/admin/api/stats`. |
+| `scripts/migrate.js` | Postgres schema migration (idempotent). |
+| `package.json` | Declares Express + pg dependencies and the `start` script. |
+| `railway.json` | Railway build/start configuration (migrate then server). |
 | `assets/M-II-Operations-Logo-no-background.jpg` | Source logo (embedded as base64 inside the HTML). |
 | `assets/M-II_Operations_Audit_Google_Sheets_Template.xlsx` | Original Google Sheets template the question bank was built from. |
 | `src/audit_questions.json` | All 100 questions in structured JSON (number, tier, impact, severity). |
@@ -104,7 +151,7 @@ rest of the flow can be previewed end-to-end.
 ```bash
 # Edit src/audit_questions.json or src/build.py, then:
 python3 src/build.py
-# This regenerates index.html in place.
+# This regenerates public/index.html in place.
 ```
 
 The build script reads `src/audit_questions.json` and `assets/M-II-Operations-Logo-no-background.jpg`,
@@ -112,16 +159,40 @@ base64-encodes the logo, and stamps the questions into the HTML template.
 
 ---
 
+## Local development
+
+```bash
+# Install dependencies
+npm install
+
+# Run a local Postgres (or set DATABASE_URL to any existing Postgres)
+export DATABASE_URL="postgres://user:pass@localhost:5432/mii_audit"
+export ADMIN_USER=admin
+export ADMIN_PASS=changeme
+export PORT=3000
+
+# Apply schema and start
+npm run migrate
+npm start
+```
+
+Then visit:
+- `http://localhost:3000/` — the wizard
+- `http://localhost:3000/admin` — the admin dashboard (Basic Auth)
+- `http://localhost:3000/healthz` — health check (also reports whether DB is wired up)
+
+---
+
 ## Tech notes
 
-- **No backend required.** PDF generation runs client-side via jsPDF. Email goes through Web3Forms.
-  Payment goes through a Stripe Payment Link.
+- **Express + Postgres backend.** PDF generation still runs client-side via jsPDF (no server-side
+  rendering). Email goes through Web3Forms. Payment goes through a Stripe Payment Link.
 - **Fonts:** DM Sans (headings) + Inter (body), loaded from Google Fonts with system sans-serif fallback.
 - **Branding:** Navy `#16263F` + gold/silver accent. Matches the M-II Operations logo.
 - **Data persistence:** Customer answers are stored in `localStorage` under `mii_audit_v1` and cleared on
-  "Clear & Restart" or after a successful submit + new audit.
-- **Privacy:** Nothing is sent anywhere until the customer clicks **Generate Report & Send** on the review
-  page. PDF is built and emailed in one step; the customer downloads a copy locally.
+  "Clear & Restart" or after a successful submit + new audit. They're also written to Postgres at submit.
+- **Resilience:** The `POST /api/submit` call is best-effort — if Postgres is unreachable, the email
+  and PDF flow still complete normally. The migration script is idempotent and won't fail on re-runs.
 
 ---
 

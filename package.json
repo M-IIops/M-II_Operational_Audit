@@ -1,13 +1,17 @@
 {
   "name": "mii-operational-audit",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "private": true,
-  "description": "Static hosting for the M-II Operational Audit wizard on Railway.",
+  "description": "M-II Operational Audit wizard + anonymous response storage + admin dashboard.",
+  "main": "server.js",
   "scripts": {
-    "start": "serve -s . -l ${PORT:-3000} --no-clipboard --no-port-switching"
+    "start": "node server.js",
+    "migrate": "node scripts/migrate.js",
+    "dev": "node server.js"
   },
   "dependencies": {
-    "serve": "^14.2.4"
+    "express": "^4.19.2",
+    "pg": "^8.11.5"
   },
   "engines": {
     "node": ">=18"

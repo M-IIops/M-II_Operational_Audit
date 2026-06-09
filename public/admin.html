@@ -1,0 +1,257 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>M-II Audit — Admin Dashboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@500;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
+<style>
+  :root {
+    --navy:#16263F; --navy-2:#1f3354; --gold:#C9A24B; --silver:#A8B0BC;
+    --bg:#F5F6F8; --card:#FFFFFF; --ink:#0E1A2C; --muted:#5B677A; --line:#E4E7EC;
+    --good:#1E8E4E; --warn:#B58900; --bad:#B23A48;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0;background:var(--bg);color:var(--ink);font-family:Inter,system-ui,sans-serif}
+  header{background:var(--navy);color:#fff;padding:18px 28px;display:flex;align-items:center;justify-content:space-between}
+  header h1{font-family:'DM Sans',sans-serif;font-size:20px;margin:0;letter-spacing:.2px}
+  header .sub{font-size:12px;color:var(--silver)}
+  main{max-width:1280px;margin:0 auto;padding:24px}
+  .kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:20px}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px 18px;box-shadow:0 1px 2px rgba(15,23,42,.04)}
+  .kpi .label{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.6px}
+  .kpi .value{font-family:'DM Sans',sans-serif;font-size:28px;margin-top:6px;color:var(--navy)}
+  .kpi .sub{font-size:12px;color:var(--muted);margin-top:4px}
+  .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px}
+  .grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:16px}
+  .card h2{font-family:'DM Sans',sans-serif;font-size:14px;margin:0 0 10px;color:var(--navy);letter-spacing:.3px;text-transform:uppercase}
+  .card h2 .hint{font-family:Inter,sans-serif;font-size:11px;color:var(--muted);text-transform:none;letter-spacing:0;margin-left:6px}
+  .chart-wrap{position:relative;height:240px}
+  table{width:100%;border-collapse:collapse;font-size:13px}
+  th,td{text-align:left;padding:7px 8px;border-bottom:1px solid var(--line)}
+  th{color:var(--muted);font-weight:600;font-size:11px;text-transform:uppercase;letter-spacing:.5px}
+  tr:last-child td{border-bottom:none}
+  .pct{font-variant-numeric:tabular-nums;font-weight:600}
+  .pct.bad{color:var(--bad)} .pct.warn{color:var(--warn)} .pct.good{color:var(--good)}
+  .empty{padding:18px;text-align:center;color:var(--muted);font-size:13px}
+  .badge{display:inline-block;background:#EEF2F7;color:var(--navy);border-radius:999px;padding:2px 8px;font-size:11px;margin-right:4px}
+  @media (max-width:1000px){
+    .kpis{grid-template-columns:repeat(2,1fr)}
+    .grid-2,.grid-3{grid-template-columns:1fr}
+  }
+</style>
+</head>
+<body>
+<header>
+  <div>
+    <h1>M-II Operational Audit — Admin</h1>
+    <div class="sub">Aggregate insights across all completed audits</div>
+  </div>
+  <div class="sub" id="updated"></div>
+</header>
+<main>
+
+  <section class="kpis">
+    <div class="card kpi"><div class="label">Total Submissions</div><div class="value" id="kpi-total">—</div><div class="sub" id="kpi-range"></div></div>
+    <div class="card kpi"><div class="label">Avg Overall Maturity</div><div class="value" id="kpi-avg">—</div><div class="sub">Across all responses</div></div>
+    <div class="card kpi"><div class="label">Weakest Tier</div><div class="value" id="kpi-weak-tier">—</div><div class="sub" id="kpi-weak-tier-sub"></div></div>
+    <div class="card kpi"><div class="label">Weakest Impact Area</div><div class="value" id="kpi-weak-cat">—</div><div class="sub" id="kpi-weak-cat-sub"></div></div>
+  </section>
+
+  <section class="grid-2">
+    <div class="card">
+      <h2>Submissions over time <span class="hint">last 90 days</span></h2>
+      <div class="chart-wrap"><canvas id="ch-perday"></canvas></div>
+    </div>
+    <div class="card">
+      <h2>Tier maturity average <span class="hint">% of max points</span></h2>
+      <div class="chart-wrap"><canvas id="ch-tier"></canvas></div>
+    </div>
+  </section>
+
+  <section class="grid-2">
+    <div class="card">
+      <h2>Most-neglected questions <span class="hint">lowest avg score; ranked</span></h2>
+      <div id="most-failed-table"></div>
+    </div>
+    <div class="card">
+      <h2>Impact areas — average score <span class="hint">Productivity, Margin, etc.</span></h2>
+      <div class="chart-wrap"><canvas id="ch-cat"></canvas></div>
+    </div>
+  </section>
+
+  <section class="grid-3">
+    <div class="card">
+      <h2>By industry</h2>
+      <div class="chart-wrap"><canvas id="ch-ind"></canvas></div>
+    </div>
+    <div class="card">
+      <h2>By revenue range</h2>
+      <div class="chart-wrap"><canvas id="ch-rev"></canvas></div>
+    </div>
+    <div class="card">
+      <h2>By headcount</h2>
+      <div class="chart-wrap"><canvas id="ch-head"></canvas></div>
+    </div>
+  </section>
+
+  <section class="grid-2">
+    <div class="card">
+      <h2>Risk severity averages</h2>
+      <div class="chart-wrap"><canvas id="ch-sev"></canvas></div>
+    </div>
+    <div class="card">
+      <h2>Recent contacts <span class="hint">most recent 25</span></h2>
+      <div id="recent-table" style="max-height:260px;overflow:auto"></div>
+    </div>
+  </section>
+
+</main>
+
+<script>
+const NAVY = '#16263F';
+const GOLD = '#C9A24B';
+const SILVER = '#A8B0BC';
+const NAVY_2 = '#1f3354';
+const GOOD = '#1E8E4E', WARN = '#B58900', BAD = '#B23A48';
+
+function pctClass(v){
+  if (v == null) return '';
+  const n = Number(v);
+  if (n >= 85) return 'good';
+  if (n >= 50) return 'warn';
+  return 'bad';
+}
+function fmtPct(v){ return v == null ? '—' : Number(v).toFixed(1) + '%'; }
+function fmtDate(s){ if(!s) return ''; const d=new Date(s); return d.toLocaleDateString(); }
+function fmtDateTime(s){ if(!s) return ''; const d=new Date(s); return d.toLocaleString(); }
+
+const charts = {};
+function makeBar(id, labels, data, opts={}){
+  const ctx = document.getElementById(id);
+  if (charts[id]) charts[id].destroy();
+  charts[id] = new Chart(ctx, {
+    type: opts.type || 'bar',
+    data: {
+      labels,
+      datasets: [{
+        label: opts.label || 'Value',
+        data,
+        backgroundColor: opts.color || NAVY,
+        borderColor: opts.color || NAVY,
+        borderWidth: 1,
+        borderRadius: 4,
+        tension: 0.3,
+        fill: opts.type === 'line' ? false : true,
+      }],
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      indexAxis: opts.horizontal ? 'y' : 'x',
+      plugins: { legend: { display: false } },
+      scales: {
+        x: { ticks: { color: '#5B677A', font: { size: 11 } }, grid: { color: '#EEF2F7' } },
+        y: { ticks: { color: '#5B677A', font: { size: 11 } }, grid: { color: '#EEF2F7' }, beginAtZero: true, ...(opts.maxY ? { max: opts.maxY } : {}) },
+      },
+    },
+  });
+}
+
+function renderMostFailed(rows){
+  const el = document.getElementById('most-failed-table');
+  if (!rows || !rows.length){ el.innerHTML = '<div class="empty">No responses yet.</div>'; return; }
+  let html = '<table><thead><tr><th>Q#</th><th>Avg score</th><th>Score 0</th><th>Score 1</th><th>Score 2</th><th>n</th></tr></thead><tbody>';
+  for (const r of rows){
+    const avg = Number(r.avg_score);
+    const cls = avg < 1 ? 'bad' : avg < 1.6 ? 'warn' : 'good';
+    html += `<tr><td>#${r.qid}</td><td class="pct ${cls}">${avg.toFixed(2)}</td><td>${r.zero_count}</td><td>${r.one_count}</td><td>${r.two_count}</td><td>${r.total}</td></tr>`;
+  }
+  html += '</tbody></table>';
+  el.innerHTML = html;
+}
+
+function renderRecent(rows){
+  const el = document.getElementById('recent-table');
+  if (!rows || !rows.length){ el.innerHTML = '<div class="empty">No contacts yet.</div>'; return; }
+  let html = '<table><thead><tr><th>When</th><th>Company</th><th>Contact</th><th>Role</th><th>Location</th><th>Score</th></tr></thead><tbody>';
+  for (const r of rows){
+    const cls = pctClass(r.overall_pct);
+    html += `<tr><td>${fmtDateTime(r.submitted_at)}</td><td>${escapeHtml(r.company||'')}</td><td>${escapeHtml(r.contact_name||'')}<br><span style="color:#5B677A;font-size:11px">${escapeHtml(r.email||'')}</span></td><td>${escapeHtml(r.role||'')}</td><td>${escapeHtml(r.location||'')}</td><td class="pct ${cls}">${fmtPct(r.overall_pct)}</td></tr>`;
+  }
+  html += '</tbody></table>';
+  el.innerHTML = html;
+}
+
+function escapeHtml(s){
+  return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+async function load(){
+  try {
+    const r = await fetch('/admin/api/stats', { credentials: 'same-origin' });
+    if (!r.ok) throw new Error('HTTP ' + r.status);
+    const j = await r.json();
+
+    // KPIs
+    document.getElementById('kpi-total').textContent = j.totals.total ?? 0;
+    document.getElementById('kpi-range').textContent =
+      j.totals.first_at ? `${fmtDate(j.totals.first_at)} – ${fmtDate(j.totals.last_at)}` : '—';
+    document.getElementById('kpi-avg').textContent = j.totals.avg_overall != null ? Number(j.totals.avg_overall).toFixed(1) + '%' : '—';
+
+    const ta = j.tier_avg || {};
+    const tierPairs = Object.entries(ta).filter(([k,v]) => v != null).map(([k,v]) => [k, Number(v)]);
+    if (tierPairs.length){
+      tierPairs.sort((a,b)=> a[1]-b[1]);
+      const [weakest, val] = tierPairs[0];
+      document.getElementById('kpi-weak-tier').textContent = weakest.charAt(0).toUpperCase()+weakest.slice(1);
+      document.getElementById('kpi-weak-tier-sub').textContent = `Avg ${val.toFixed(1)}%`;
+    }
+    const catSorted = [...(j.category_avg||[])].filter(c => c.avg_pct != null);
+    catSorted.sort((a,b)=> Number(a.avg_pct)-Number(b.avg_pct));
+    if (catSorted.length){
+      document.getElementById('kpi-weak-cat').textContent = catSorted[0].label;
+      document.getElementById('kpi-weak-cat-sub').textContent = `Avg ${Number(catSorted[0].avg_pct).toFixed(1)}%`;
+    }
+
+    // Per-day line
+    const days = j.per_day || [];
+    makeBar('ch-perday', days.map(d => fmtDate(d.day)), days.map(d => d.n), { type:'line', color: NAVY, label:'Submissions' });
+
+    // Tier
+    const tk = ['foundations','implementation','transformation'].filter(k => ta[k] != null);
+    makeBar('ch-tier', tk.map(s => s.charAt(0).toUpperCase()+s.slice(1)), tk.map(k => Number(ta[k])), { color: GOLD, maxY: 100 });
+
+    // Categories
+    const cat = j.category_avg || [];
+    makeBar('ch-cat', cat.map(c => c.label), cat.map(c => Number(c.avg_pct||0)), { color: NAVY_2, horizontal: true, maxY: 100 });
+
+    // Industry / revenue / headcount
+    const ind = j.by_industry || [];
+    makeBar('ch-ind', ind.map(x => x.label), ind.map(x => x.n), { color: NAVY });
+    const rev = j.by_revenue || [];
+    makeBar('ch-rev', rev.map(x => x.label), rev.map(x => x.n), { color: GOLD });
+    const head = j.by_headcount || [];
+    makeBar('ch-head', head.map(x => x.label), head.map(x => x.n), { color: SILVER });
+
+    // Severity
+    const sev = j.severity_avg || [];
+    makeBar('ch-sev', sev.map(x => x.label), sev.map(x => Number(x.avg_pct||0)), { color: BAD, maxY: 100 });
+
+    // Tables
+    renderMostFailed(j.most_failed || []);
+    renderRecent(j.recent_contacts || []);
+
+    document.getElementById('updated').textContent = 'Updated ' + new Date().toLocaleTimeString();
+  } catch (err) {
+    document.getElementById('updated').textContent = 'Failed to load: ' + err.message;
+  }
+}
+load();
+setInterval(load, 60_000);
+</script>
+</body>
+</html>
