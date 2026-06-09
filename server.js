@@ -22,10 +22,27 @@ const path = require('path');
 const express = require('express');
 const { Pool } = require('pg');
 
+const crypto = require('crypto');
+
 const PORT = parseInt(process.env.PORT, 10) || 3000;
 const DATABASE_URL = process.env.DATABASE_URL || '';
-const ADMIN_USER = process.env.ADMIN_USER || 'admin';
-const ADMIN_PASS = process.env.ADMIN_PASS || '';
+
+// Strip whitespace + accidentally-pasted surrounding single/double quotes.
+// Railway preserves env-var values literally, so a paste like  "my pass"
+// (with the quotes) would otherwise never match what the browser sends.
+function cleanEnv(v) {
+  if (v == null) return '';
+  let s = String(v).trim();
+  if (s.length >= 2) {
+    const first = s[0], last = s[s.length - 1];
+    if ((first === '"' && last === '"') || (first === "'" && last === "'")) {
+      s = s.slice(1, -1);
+    }
+  }
+  return s;
+}
+const ADMIN_USER = cleanEnv(process.env.ADMIN_USER) || 'admin';
+const ADMIN_PASS = cleanEnv(process.env.ADMIN_PASS);
 
 const app = express();
 app.disable('x-powered-by');
@@ -72,6 +89,18 @@ function clampPct(n) {
   return Math.round(x * 100) / 100;
 }
 
+// Constant-time string compare that tolerates length differences.
+function safeEq(a, b) {
+  const ab = Buffer.from(String(a));
+  const bb = Buffer.from(String(b));
+  if (ab.length !== bb.length) {
+    // still consume time so we don't leak length
+    crypto.timingSafeEqual(ab, ab);
+    return false;
+  }
+  return crypto.timingSafeEqual(ab, bb);
+}
+
 function basicAuth(req, res, next) {
   if (!ADMIN_PASS) {
     return res
@@ -80,27 +109,41 @@ function basicAuth(req, res, next) {
   }
   const header = req.headers.authorization || '';
   if (!header.startsWith('Basic ')) {
-    res.set('WWW-Authenticate', 'Basic realm="M-II Audit Admin"');
+    res.set('WWW-Authenticate', 'Basic realm="M-II Audit Admin", charset="UTF-8"');
+    res.set('Cache-Control', 'no-store');
     return res.status(401).send('Authentication required.');
   }
   let decoded = '';
   try {
     decoded = Buffer.from(header.slice(6), 'base64').toString('utf8');
   } catch {
-    res.set('WWW-Authenticate', 'Basic realm="M-II Audit Admin"');
+    res.set('WWW-Authenticate', 'Basic realm="M-II Audit Admin", charset="UTF-8"');
+    res.set('Cache-Control', 'no-store');
     return res.status(401).send('Invalid credentials.');
   }
   const idx = decoded.indexOf(':');
   const user = idx >= 0 ? decoded.slice(0, idx) : decoded;
   const pass = idx >= 0 ? decoded.slice(idx + 1) : '';
-  if (user === ADMIN_USER && pass === ADMIN_PASS) return next();
-  res.set('WWW-Authenticate', 'Basic realm="M-II Audit Admin"');
+  if (safeEq(user, ADMIN_USER) && safeEq(pass, ADMIN_PASS)) return next();
+  console.warn(
+    '[admin] auth failed: provided user=%j pass-length=%d; expected user=%j pass-length=%d',
+    user, pass.length, ADMIN_USER, ADMIN_PASS.length
+  );
+  res.set('WWW-Authenticate', 'Basic realm="M-II Audit Admin", charset="UTF-8"');
+  res.set('Cache-Control', 'no-store');
   return res.status(401).send('Invalid credentials.');
 }
 
 // ---------- Routes ----------
 app.get('/healthz', (req, res) => {
-  res.json({ ok: true, db: !!pool, time: new Date().toISOString() });
+  res.json({
+    ok: true,
+    db: !!pool,
+    admin_configured: !!ADMIN_PASS,
+    admin_user: ADMIN_USER,
+    admin_pass_length: ADMIN_PASS.length,
+    time: new Date().toISOString(),
+  });
 });
 
 /**
