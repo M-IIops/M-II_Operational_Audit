@@ -35,6 +35,9 @@ html = r'''<!doctype html>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Operational Audit — M-II Operations</title>
 <meta name="theme-color" content="#16263F" />
+<link rel="icon" type="image/png" sizes="256x256" href="/mii_audit_icon.png" />
+<link rel="shortcut icon" type="image/png" href="/mii_audit_icon.png" />
+<link rel="apple-touch-icon" sizes="180x180" href="/mii_audit_icon_180.png" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
@@ -80,8 +83,11 @@ a:hover{text-decoration-color:var(--accent)}
 .brand img{height:46px;width:auto;display:block}
 .brand-text{font-family:'DM Sans',sans-serif;font-weight:700;font-size:15px;letter-spacing:.04em;text-transform:uppercase;color:#fff;line-height:1}
 .brand-text span{display:block;font-weight:500;font-size:11px;color:var(--silver-2);letter-spacing:.18em;margin-top:4px}
-.header-meta{font-size:13px;color:var(--silver-2);text-align:right}
+.header-meta{font-size:13px;color:var(--silver-2);text-align:right;display:flex;align-items:center;gap:12px}
 .header-meta strong{color:#fff;display:block;font-weight:600;font-size:14px}
+.audit-icon{height:48px;width:48px;border-radius:10px;display:block;box-shadow:0 1px 8px rgba(201,162,75,.18)}
+.header-meta-text{line-height:1.35}
+@media (max-width:560px){.audit-icon{display:none}}
 
 /* Layout */
 main{padding:40px 0 80px;min-height:calc(100vh - 96px)}
@@ -208,8 +214,11 @@ main{padding:40px 0 80px;min-height:calc(100vh - 96px)}
       <div class="brand-text">M-II Operations<span>Fractional COO · Waxahachie, TX</span></div>
     </div>
     <div class="header-meta">
-      <strong>Operational Audit</strong>
-      100 touchpoints · 8 areas
+      <img class="audit-icon" src="/mii_audit_icon.png" alt="M-II Audit" width="56" height="56" />
+      <div class="header-meta-text">
+        <strong>Operational Audit</strong>
+        100 touchpoints · 8 areas
+      </div>
     </div>
   </div>
 </header>
@@ -459,6 +468,23 @@ const STORAGE_KEY = 'mii_audit_v1';
 // so you can preview the rest of the flow end-to-end.
 const STRIPE_PAYMENT_LINK = "https://buy.stripe.com/28E6oGeKv0327E66aoeME02";
 const AUDIT_PRICE_LABEL = "$998";
+
+// Audit icon for PDF cover — loaded asynchronously from the server. The PDF
+// cover will skip the icon gracefully if this is still null at submit time.
+let AUDIT_ICON_DATAURL = null;
+(async () => {
+  try {
+    const r = await fetch('/mii_audit_icon.png');
+    if (!r.ok) return;
+    const blob = await r.blob();
+    AUDIT_ICON_DATAURL = await new Promise((res, rej) => {
+      const fr = new FileReader();
+      fr.onload = () => res(fr.result);
+      fr.onerror = rej;
+      fr.readAsDataURL(blob);
+    });
+  } catch(e){ /* non-fatal */ }
+})();
 
 // ============= STATE =============
 let state = loadState();
@@ -803,6 +829,13 @@ async function generatePDF(){
   // logo (embedded)
   try {
     doc.addImage('data:image/jpeg;base64,__LOGO_B64__', 'JPEG', margin, 80, 140, 74, undefined, 'FAST');
+  } catch(e){}
+
+  // audit icon (top-right)
+  try {
+    if (typeof AUDIT_ICON_DATAURL !== 'undefined' && AUDIT_ICON_DATAURL) {
+      doc.addImage(AUDIT_ICON_DATAURL, 'PNG', pageW - margin - 80, 60, 80, 80);
+    }
   } catch(e){}
 
   doc.setTextColor(255,255,255);

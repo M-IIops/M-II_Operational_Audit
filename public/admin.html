@@ -4,6 +4,10 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
 <title>M-II Audit — Admin Dashboard</title>
+<link rel="icon" type="image/png" sizes="256x256" href="/mii_audit_icon.png" />
+<link rel="shortcut icon" type="image/png" href="/mii_audit_icon.png" />
+<link rel="apple-touch-icon" sizes="180x180" href="/mii_audit_icon_180.png" />
+<meta name="theme-color" content="#16263F" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@500;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
@@ -16,7 +20,9 @@
   }
   *{box-sizing:border-box}
   html,body{margin:0;padding:0;background:var(--bg);color:var(--ink);font-family:Inter,system-ui,sans-serif}
-  header{background:var(--navy);color:#fff;padding:18px 28px;display:flex;align-items:center;justify-content:space-between}
+  header{background:var(--navy);color:#fff;padding:18px 28px;display:flex;align-items:center;justify-content:space-between;gap:16px}
+  header .left{display:flex;align-items:center;gap:14px}
+  header .audit-icon{height:48px;width:48px;border-radius:10px;display:block;box-shadow:0 1px 10px rgba(201,162,75,.22)}
   header h1{font-family:'DM Sans',sans-serif;font-size:20px;margin:0;letter-spacing:.2px}
   header .sub{font-size:12px;color:var(--silver)}
   main{max-width:1280px;margin:0 auto;padding:24px}
@@ -46,9 +52,12 @@
 </head>
 <body>
 <header>
-  <div>
-    <h1>M-II Operational Audit — Admin</h1>
-    <div class="sub">Aggregate insights across all completed audits</div>
+  <div class="left">
+    <img class="audit-icon" src="/mii_audit_icon.png" alt="M-II Audit" width="56" height="56" />
+    <div>
+      <h1>M-II Operational Audit — Admin</h1>
+      <div class="sub">Aggregate insights across all completed audits</div>
+    </div>
   </div>
   <div class="sub" id="updated"></div>
 </header>
