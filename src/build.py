@@ -6,7 +6,7 @@ Reads:
     ./audit_questions.json
 
 Writes:
-    ../operational-audit-wizard.html
+    ../index.html  (the wizard — served at the site root)
 
 Usage (from anywhere):
     python3 src/build.py
@@ -18,7 +18,7 @@ import os
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 LOGO_PATH = os.path.join(ROOT, 'assets', 'M-II-Operations-Logo-no-background.jpg')
 QUESTIONS_PATH = os.path.join(ROOT, 'src', 'audit_questions.json')
-OUTPUT_PATH = os.path.join(ROOT, 'operational-audit-wizard.html')
+OUTPUT_PATH = os.path.join(ROOT, 'index.html')
 
 with open(LOGO_PATH, 'rb') as f:
     logo_b64 = base64.b64encode(f.read()).decode('ascii')

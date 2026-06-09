@@ -1,0 +1,15 @@
+{
+  "name": "mii-operational-audit",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Static hosting for the M-II Operational Audit wizard on Railway.",
+  "scripts": {
+    "start": "serve -s . -l ${PORT:-3000} --no-clipboard --no-port-switching"
+  },
+  "dependencies": {
+    "serve": "^14.2.4"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

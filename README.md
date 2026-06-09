@@ -4,8 +4,8 @@ Self-contained HTML wizard that guides a small or mid-size business owner throug
 100-touchpoint operational audit, then generates a branded PDF report and forwards results to
 [Randy.Derrick@miiops.com](mailto:Randy.Derrick@miiops.com) for a 30-minute review call.
 
-**Live entry point:** open `operational-audit-wizard.html` in any modern browser, or host it at a public URL
-(Hostinger, GitHub Pages, Railway static, etc.).
+**Live entry point:** open `index.html` in any modern browser, or deploy to Railway
+(recommended — see [Deploy to Railway](#deploy-to-railway) below).
 
 ---
 
@@ -23,6 +23,30 @@ Self-contained HTML wizard that guides a small or mid-size business owner throug
 6. **Submit** — generates a branded PDF (cover · executive summary · impact areas · prioritized action
    plan · full response log · next-steps page), downloads it to the customer's device, and emails the
    results + PDF attachment to Randy with the subject **"Operational Audit — [Company Name]"**.
+
+---
+
+## Deploy to Railway
+
+This repo is configured to deploy as a static site on Railway with zero extra setup.
+
+1. In Railway, click **+ New → Deploy from GitHub repo → `M-IIops/M-II_Operational_Audit`**.
+   *(If the repo doesn't appear, go to <https://github.com/settings/installations>, find Railway,
+   click Configure on the **M-IIops** org installation, and grant access to this repo.)*
+2. Railway detects `package.json` and `railway.json` and builds automatically (Nixpacks → Node).
+3. Once deployed, click **Settings → Networking → Generate Domain** to get a public URL like
+   `mii-operational-audit-production.up.railway.app`. Add a custom domain (e.g.
+   `audit.miiops.com`) if you'd like a branded URL.
+4. The root of the domain (`/`) serves the wizard (`index.html`) directly.
+5. Set your Stripe Payment Link's **success URL** to:
+   `https://YOUR-RAILWAY-DOMAIN/?paid=1`
+
+Files that make this work:
+- `package.json` — declares `serve` as the runtime and exposes `npm start` on `$PORT`.
+- `railway.json` — tells Railway the start command and restart policy.
+- `serve.json` — cache headers and static-site behavior.
+
+No Dockerfile required. No environment variables required. Re-deploys on every push to `main`.
 
 ---
 
@@ -63,8 +87,11 @@ rest of the flow can be previewed end-to-end.
 
 | File | What it is |
 | --- | --- |
-| `operational-audit-wizard.html` | The standalone wizard. **This is what you host.** |
+| `index.html` | The standalone wizard. **This is what gets served at `/`.** |
 | `sample_audit_report.pdf` | Example PDF output so you can see what clients receive. |
+| `package.json` | Node config so Railway can serve the static file. |
+| `railway.json` | Railway build/start configuration. |
+| `serve.json` | Cache headers + static-site behavior for the deployed Railway service. |
 | `assets/M-II-Operations-Logo-no-background.jpg` | Source logo (embedded as base64 inside the HTML). |
 | `assets/M-II_Operations_Audit_Google_Sheets_Template.xlsx` | Original Google Sheets template the question bank was built from. |
 | `src/audit_questions.json` | All 100 questions in structured JSON (number, tier, impact, severity). |
@@ -77,7 +104,7 @@ rest of the flow can be previewed end-to-end.
 ```bash
 # Edit src/audit_questions.json or src/build.py, then:
 python3 src/build.py
-# This regenerates operational-audit-wizard.html in place.
+# This regenerates index.html in place.
 ```
 
 The build script reads `src/audit_questions.json` and `assets/M-II-Operations-Logo-no-background.jpg`,
