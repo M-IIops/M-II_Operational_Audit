@@ -54,7 +54,9 @@ This repo deploys as an Express app on Railway with a Postgres add-on.
    `mii-operational-audit-production.up.railway.app`. Add a custom domain (e.g.
    `audit.miiops.com`) if you'd like a branded URL.
 6. Set your Stripe Payment Link's **success URL** to:
-   `https://YOUR-RAILWAY-DOMAIN/?paid=1`
+   `https://YOUR-RAILWAY-DOMAIN/welcome`
+   This shows the customer a branded thank-you page with a "Start the Audit"
+   button that forwards them into the wizard with `?paid=1`.
 
 Files that make this work:
 - `package.json` — declares `express` and `pg` and exposes `npm start` on `$PORT`.
@@ -93,8 +95,11 @@ const STRIPE_PAYMENT_LINK = "REPLACE_WITH_STRIPE_PAYMENT_LINK";
 ```
 
 1. In Stripe Dashboard → Products → **Payment Links** → create a $998 one-time payment link.
-2. Set its **success URL** to the public URL of this page with `?paid=1` appended, e.g.
-   `https://audit.miiops.com/?paid=1`.
+2. Set its **success URL** to the branded welcome page, e.g.
+   `https://audit.miiops.com/welcome`. That page thanks the customer, lays out the
+   three-step flow, and has a button that forwards them into the wizard with `?paid=1`.
+   (You can also point the success URL directly at `?paid=1` to skip the welcome page,
+   but the welcome page makes for a much smoother handoff.)
 3. Paste the Payment Link URL between the quotes.
 
 While the value still starts with `REPLACE_`, the Pay button runs a clearly labeled test simulation so the
@@ -133,6 +138,7 @@ their `audit_contacts` row too.
 | File | What it is |
 | --- | --- |
 | `public/index.html` | The standalone wizard. Served at `/`. |
+| `public/welcome.html` | Post-payment landing page. Served at `/welcome`. Stripe's Payment Link success URL points here. |
 | `public/admin.html` | The admin dashboard (charts + tables). Served at `/admin` behind Basic Auth. |
 | `public/sample_audit_report.pdf` | Example PDF output so you can see what clients receive. |
 | `server.js` | Express app: static `/public`, `POST /api/submit`, `/admin`, `/admin/api/stats`. |

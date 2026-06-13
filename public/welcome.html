@@ -1,0 +1,251 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Welcome — Your M-II Operational Audit</title>
+<meta name="theme-color" content="#16263F" />
+<link rel="icon" type="image/png" sizes="256x256" href="/mii_audit_icon.png" />
+<link rel="shortcut icon" type="image/png" href="/mii_audit_icon.png" />
+<link rel="apple-touch-icon" sizes="180x180" href="/mii_audit_icon_180.png" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --navy:#16263F; --navy-2:#1f3354; --navy-3:#243d65;
+    --gold:#C9A24B; --gold-soft:#E8D49A;
+    --silver:#A8B0BC; --silver-2:#C9CFD8;
+    --bg:#F5F6F8; --surface:#FFFFFF;
+    --ink:#0E1A2C; --ink-2:#39455A; --muted:#5B677A;
+    --line:#E4E7EC; --good:#1E8E4E;
+    --radius-lg:18px; --radius-md:12px; --radius-sm:8px;
+    --shadow:0 10px 30px -12px rgba(15,23,42,.18), 0 2px 6px rgba(15,23,42,.06);
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0;background:var(--bg);color:var(--ink);font-family:Inter,system-ui,-apple-system,Segoe UI,sans-serif;line-height:1.55}
+
+  /* Header strip (matches wizard) */
+  .topstrip{background:linear-gradient(180deg,var(--navy) 0%,var(--navy-2) 100%);color:#fff;border-bottom:1px solid var(--gold)}
+  .topstrip-inner{max-width:1120px;margin:0 auto;padding:18px 24px;display:flex;align-items:center;justify-content:space-between;gap:16px}
+  .brand{display:flex;align-items:center;gap:12px}
+  .brand img.logo{height:42px;width:auto;display:block;background:#fff;padding:4px 8px;border-radius:6px}
+  .brand-text{font-family:'DM Sans',sans-serif;font-weight:700;font-size:14px;letter-spacing:.06em;text-transform:uppercase;line-height:1.1}
+  .brand-text span{display:block;font-weight:500;font-size:10.5px;color:var(--silver-2);letter-spacing:.2em;margin-top:4px}
+  .right-meta{display:flex;align-items:center;gap:12px}
+  .right-meta img.audit-icon{height:44px;width:44px;border-radius:10px;display:block;box-shadow:0 1px 8px rgba(201,162,75,.18)}
+  .right-meta .meta-text{font-size:12px;color:var(--silver-2);text-align:right;line-height:1.4}
+  .right-meta .meta-text strong{display:block;color:#fff;font-weight:600;font-size:13.5px}
+  @media (max-width:520px){ .right-meta img.audit-icon{display:none} }
+
+  /* Hero */
+  main{padding:56px 24px 80px}
+  .container{max-width:880px;margin:0 auto}
+
+  .success-pill{
+    display:inline-flex;align-items:center;gap:10px;
+    background:rgba(30,142,78,.08);color:var(--good);
+    border:1px solid rgba(30,142,78,.25);
+    padding:7px 14px;border-radius:999px;
+    font-size:12.5px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;
+  }
+  .success-pill svg{width:14px;height:14px}
+
+  h1{
+    font-family:'DM Sans',sans-serif;
+    font-size:clamp(34px,4.6vw,52px);
+    line-height:1.1;letter-spacing:-.015em;
+    margin:18px 0 14px;color:var(--navy);font-weight:700;
+  }
+  .lede{font-size:18px;color:var(--ink-2);max-width:640px;margin:0 0 36px}
+
+  .card{
+    background:var(--surface);border:1px solid var(--line);
+    border-radius:var(--radius-lg);box-shadow:var(--shadow);
+    padding:34px 34px 30px;margin-bottom:22px;
+  }
+  .card h2{
+    font-family:'DM Sans',sans-serif;font-size:13px;
+    text-transform:uppercase;letter-spacing:.14em;
+    margin:0 0 18px;color:var(--gold);font-weight:600;
+  }
+
+  /* Three-step row */
+  .steps{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-bottom:8px}
+  .step{
+    display:flex;flex-direction:column;gap:8px;
+    padding:18px 18px 20px;
+    border:1px solid var(--line);border-radius:var(--radius-md);
+    background:linear-gradient(180deg,#FBFCFD 0%,#F5F7FA 100%);
+  }
+  .step .num{
+    width:30px;height:30px;border-radius:50%;
+    background:var(--navy);color:#fff;
+    font-family:'DM Sans',sans-serif;font-weight:700;font-size:14px;
+    display:flex;align-items:center;justify-content:center;
+  }
+  .step h3{margin:6px 0 2px;font-size:15px;color:var(--navy);font-weight:600;font-family:'DM Sans',sans-serif}
+  .step p{margin:0;font-size:13.5px;color:var(--ink-2);line-height:1.5}
+  @media (max-width:680px){ .steps{grid-template-columns:1fr} }
+
+  /* Info row */
+  .info-row{
+    display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:30px;
+  }
+  .info{
+    display:flex;gap:14px;align-items:flex-start;
+    padding:18px 20px;border:1px solid var(--line);
+    border-radius:var(--radius-md);background:var(--surface);
+  }
+  .info .icon{
+    flex:0 0 36px;height:36px;border-radius:8px;
+    background:rgba(22,38,63,.06);color:var(--navy);
+    display:flex;align-items:center;justify-content:center;
+  }
+  .info .icon svg{width:18px;height:18px}
+  .info .body strong{display:block;font-family:'DM Sans',sans-serif;color:var(--navy);font-size:14px;margin-bottom:3px}
+  .info .body{font-size:13.5px;color:var(--ink-2);line-height:1.5}
+  @media (max-width:680px){ .info-row{grid-template-columns:1fr} }
+
+  /* CTA */
+  .cta-row{display:flex;flex-direction:column;align-items:center;gap:14px;margin-top:8px}
+  .btn-start{
+    display:inline-flex;align-items:center;gap:12px;
+    background:linear-gradient(180deg,var(--gold) 0%,#B68F3D 100%);
+    color:var(--navy);
+    font-family:'DM Sans',sans-serif;font-weight:700;font-size:17px;
+    letter-spacing:.02em;
+    padding:18px 38px;border:none;border-radius:999px;cursor:pointer;
+    box-shadow:0 8px 22px -8px rgba(201,162,75,.65), 0 2px 4px rgba(15,23,42,.08);
+    transition:transform .12s ease, box-shadow .12s ease, filter .12s ease;
+    text-decoration:none;
+  }
+  .btn-start:hover{transform:translateY(-1px);box-shadow:0 12px 28px -8px rgba(201,162,75,.7), 0 2px 4px rgba(15,23,42,.08);filter:brightness(1.03)}
+  .btn-start:active{transform:translateY(0)}
+  .btn-start svg{width:18px;height:18px}
+  .micro{font-size:12.5px;color:var(--muted);text-align:center}
+
+  /* Footer */
+  footer{padding:30px 24px 50px;text-align:center;color:var(--muted);font-size:12.5px}
+  footer a{color:var(--muted);text-decoration:underline}
+</style>
+</head>
+<body>
+
+<div class="topstrip">
+  <div class="topstrip-inner">
+    <div class="brand">
+      <img class="logo" src="/mii_audit_icon.png" alt="" aria-hidden="true" style="background:transparent;padding:0;height:44px;width:44px;border-radius:10px" />
+      <div class="brand-text">M-II Operations<span>Fractional COO · Waxahachie, TX</span></div>
+    </div>
+    <div class="right-meta">
+      <div class="meta-text">
+        <strong>Operational Audit</strong>
+        100 touchpoints · 8 areas
+      </div>
+    </div>
+  </div>
+</div>
+
+<main>
+  <div class="container">
+
+    <div class="success-pill" role="status" aria-live="polite">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <polyline points="20 6 9 17 4 12"></polyline>
+      </svg>
+      Payment received
+    </div>
+
+    <h1>Thank you — let's get to work.</h1>
+    <p class="lede">
+      Your purchase is confirmed. The next step is the 100-question
+      operational audit. When you finish, you'll receive a branded PDF
+      report and a 30-minute review call with Randy to walk through your
+      results and action items.
+    </p>
+
+    <!-- 3-step preview -->
+    <section class="card" aria-labelledby="whatsnext">
+      <h2 id="whatsnext">What happens next</h2>
+      <div class="steps">
+        <div class="step">
+          <div class="num">1</div>
+          <h3>Complete the audit</h3>
+          <p>100 questions across Foundations, Implementation, and Transformation. Your answers save automatically.</p>
+        </div>
+        <div class="step">
+          <div class="num">2</div>
+          <h3>Receive your PDF</h3>
+          <p>A branded report lands in your inbox with your overall maturity score, weakest areas, and a prioritized action plan.</p>
+        </div>
+        <div class="step">
+          <div class="num">3</div>
+          <h3>Schedule your call</h3>
+          <p>Randy will reach out to schedule a 30-minute Zoom or phone call to review your results and answer questions.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Two info cards: time + receipt -->
+    <div class="info-row">
+      <div class="info">
+        <div class="icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"></circle>
+            <polyline points="12 6 12 12 16 14"></polyline>
+          </svg>
+        </div>
+        <div class="body">
+          <strong>About 25–35 minutes</strong>
+          That's the typical time to complete all 100 questions. Your answers save in your browser as you go, so you can pause and pick up where you left off.
+        </div>
+      </div>
+      <div class="info">
+        <div class="icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M4 4h16v16H4z"></path>
+            <polyline points="4 8 12 13 20 8"></polyline>
+          </svg>
+        </div>
+        <div class="body">
+          <strong>Your receipt is on the way</strong>
+          Stripe will email you a payment confirmation receipt separately. Hang on to it for your records — there's nothing else you need to do on the billing side.
+        </div>
+      </div>
+    </div>
+
+    <!-- CTA -->
+    <div class="cta-row">
+      <a class="btn-start" id="start-btn" href="/?paid=1">
+        Start the Audit
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <line x1="5" y1="12" x2="19" y2="12"></line>
+          <polyline points="12 5 19 12 12 19"></polyline>
+        </svg>
+      </a>
+      <div class="micro">You can close this window any time — your progress will be saved on this device.</div>
+    </div>
+
+  </div>
+</main>
+
+<footer>
+  Questions? Email <a href="mailto:Randy.Derrick@miiops.com">Randy.Derrick@miiops.com</a> · © M-II Operations, LLC · Waxahachie, Texas
+</footer>
+
+<script>
+  // Pass through any Stripe-provided query params (session_id, etc.) when the
+  // user clicks Start, in case we ever want to log them on the wizard side.
+  (function(){
+    try {
+      const params = new URLSearchParams(window.location.search);
+      params.set('paid', '1');
+      const btn = document.getElementById('start-btn');
+      if (btn) btn.href = '/?' + params.toString();
+    } catch(e){}
+  })();
+</script>
+
+</body>
+</html>
