@@ -50,11 +50,11 @@ This repo deploys as an Express app on Railway with a Postgres add-on.
    - `ADMIN_PASS` — **required** to enable the admin dashboard. If unset, `/admin` returns 503.
    - `WEB3FORMS_KEY` is currently configured inside `public/index.html` (see below); it does **not**
      need to be set as an env var.
-5. Once deployed, click **Settings → Networking → Generate Domain** to get a public URL like
-   `mii-operational-audit-production.up.railway.app`. Add a custom domain (e.g.
-   `audit.miiops.com`) if you'd like a branded URL.
+5. Once deployed, click **Settings → Networking → Generate Domain** to get a public URL.
+   This deployment is live at **<https://m-iioperationalaudit-production.up.railway.app>**.
+   Add a custom domain (e.g. `audit.miiops.com`) later if you'd like a branded URL.
 6. Set your Stripe Payment Link's **success URL** to:
-   `https://YOUR-RAILWAY-DOMAIN/welcome`
+   `https://m-iioperationalaudit-production.up.railway.app/welcome`
    This shows the customer a branded thank-you page with a "Start the Audit"
    button that forwards them into the wizard with `?paid=1`.
 
@@ -95,11 +95,12 @@ const STRIPE_PAYMENT_LINK = "REPLACE_WITH_STRIPE_PAYMENT_LINK";
 ```
 
 1. In Stripe Dashboard → Products → **Payment Links** → create a $998 one-time payment link.
-2. Set its **success URL** to the branded welcome page, e.g.
-   `https://audit.miiops.com/welcome`. That page thanks the customer, lays out the
-   three-step flow, and has a button that forwards them into the wizard with `?paid=1`.
-   (You can also point the success URL directly at `?paid=1` to skip the welcome page,
-   but the welcome page makes for a much smoother handoff.)
+2. Set its **success URL** to the branded welcome page:
+   `https://m-iioperationalaudit-production.up.railway.app/welcome`
+   That page thanks the customer, lays out the three-step flow, and has a button that
+   forwards them into the wizard with `?paid=1`. (You can also point the success URL
+   directly at `/?paid=1` to skip the welcome page, but the welcome page makes for a
+   much smoother handoff.)
 3. Paste the Payment Link URL between the quotes.
 
 While the value still starts with `REPLACE_`, the Pay button runs a clearly labeled test simulation so the
@@ -114,8 +115,8 @@ ADMIN_USER = admin
 ADMIN_PASS = <pick a strong password>
 ```
 
-Visit `https://YOUR-RAILWAY-DOMAIN/admin` and the browser will prompt for these credentials
-(HTTP Basic Auth).
+Visit <https://m-iioperationalaudit-production.up.railway.app/admin> and the browser
+will prompt for these credentials (HTTP Basic Auth).
 
 ---
 
